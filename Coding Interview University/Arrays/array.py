@@ -397,3 +397,51 @@ class DynamicArray:
         """
         self._n = 0
         self._A = self._make_array(self._capacity)  # Reset to initial capacity
+
+
+if __name__ == "__main__":
+    # Create a DynamicArray with initial capacity 5 and resize factor 1.5
+    my_array = DynamicArray(initial_capacity=5, resize_factor=1.5)
+
+    # Append elements
+    my_array.append(10)
+    my_array.append(20)
+    my_array.append(30)
+
+    print(len(my_array))  # Output: 3
+    print(my_array)  # Output: [10, 20, 30]
+
+    # Insert an element
+    my_array.insert(1, 15)
+    print(my_array)  # Output: [10, 15, 20, 30]
+
+    # Access an element
+    print(my_array[2])  # Output: 20
+
+    # Remove an element
+    my_array.remove(15)
+    print(my_array)  # Output: [10, 20, 30]
+
+    # Pop an element
+    popped_value = my_array.pop()
+    print(popped_value)  # Output: 30
+    print(my_array)  # Output: [10, 20]
+
+    # Extend with another DynamicArray
+    other_array = DynamicArray()
+    other_array.extend([40, 50])
+    my_array.extend(other_array)
+    print(my_array)  # Output: [10, 20, 40, 50]
+
+    # Concatenate using + operator
+    new_array = my_array + other_array
+    print(new_array)  # Output: [10, 20, 40, 50, 40, 50]
+
+    # Check for element existence
+    print(20 in my_array)  # Output: True
+    print(60 in my_array)  # Output: False
+
+    # Clear the array
+    my_array.clear()
+    print(len(my_array))  # Output: 0
+    print(my_array)  # Output: []
