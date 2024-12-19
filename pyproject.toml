@@ -1,0 +1,63 @@
+[build-system]
+requires = ["setuptools>=61.0"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "playground"
+version = "0.1.0"
+description = "You should probably not care about this project. It contains various code I decided to keep for various reason, none of them actually worth sharing."
+readme = "README.rst"
+authors = [
+  {name = "Yousef Adel", email = "yusufadell.dev@gmail.com"}
+]
+maintainers = [
+  {name = "Yousef Adel", email = "yusufadell.dev@gmail.com"}
+]
+classifiers = [
+
+]
+license = {text = "MIT license"}
+dependencies = [
+  "typer"
+]
+
+[project.optional-dependencies]
+dev = [
+    "coverage",  # testing
+    "mypy",  # linting
+    "pytest",  # testing
+    "ruff"  # linting
+]
+
+[project.urls]
+
+bugs = "https://github.com/imperiumx/playground/issues"
+changelog = "https://github.com/imperiumx/playground/blob/master/changelog.md"
+homepage = "https://github.com/imperiumx/playground"
+
+[tool.setuptools]
+package-dir = {"" = "src"}
+
+[tool.setuptools.package-data]
+"*" = ["*.*"]
+
+
+
+
+# Mypy
+# ----
+
+[tool.mypy]
+files = "."
+
+# Use strict defaults
+strict = true
+warn_unreachable = true
+warn_no_return = true
+
+[[tool.mypy.overrides]]
+# Don't require test functions to include types
+module = "tests.*"
+allow_untyped_defs = true
+disable_error_code = "attr-defined"
+
