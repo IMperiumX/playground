@@ -1,4 +1,5 @@
 import array
+import ctypes
 import math
 
 
@@ -129,3 +130,99 @@ class Vector:
         self._data[: self._size] += other
         return self
 
+
+class DynamicArray:
+    SHRINK_FACTOR = 0.25
+
+    def __init__(self, capacity=1):
+        self._n = 0
+        self._capacity = capacity
+        self._A = self._make_array(self._capacity)
+
+    def __len__(self):
+        return self._n
+
+    def __getitem__(self, index):
+        if not 0 <= index < self._n:
+            raise IndexError("Invalid Index")
+        return self._A[index]
+
+    def __iter__(self):
+        idx = 0
+        while idx < self._n:
+            yield self._A[idx]
+            idx += 1
+
+    def _make_array(self, c):
+        return (ctypes.py_object * c)()
+
+    def _resize(self, c):
+        B = self._make_array(c)
+        for i in range(self._n):
+            B[i] = self._A[i]
+        self._A = B
+        self._capacity = c
+
+    def append(self, obj):
+        if self._n == self._capacity:
+            self._resize(self._capacity * 2)
+
+        self._A[self._n] = obj
+        self._n += 1
+
+    def insert(self, index, obj):
+        if self._n == self._capacity:
+            self._resize(self._capacity * 2)
+
+        # shift right partiion
+        # sotre newset obj
+        # size ++
+
+        for n in range(self._n, index, -1):
+            self._A[n] = self._A[n - 1]
+        self._A[index] = obj
+        self._n += 1
+
+    def pop(self, index=None, echo=True):
+        assert self._n > 0, "Pop form an Empty Array"
+
+        if index in (None, -1):
+            index = self._n - 1
+
+        if not 0 <= index < self._n:
+            raise IndexError("Index our of Range")
+
+        obj = self._A[index]  # could raise IndexError => __getitem__
+
+        for n in range(index, self._n - 1):
+            self._A[n] = self._A[n + 1]
+
+        self._n -= 1
+        self._A[self._n] = None  # helps GC
+        if self._n <= self.SHRINK_FACTOR * self._capacity:
+            self._capacity = self._capacity // 2
+
+        if echo:
+            print(obj)
+
+    def remove(self, obj):
+        for idx, value in enumerate(self):
+            if obj == value:
+                self.pop(idx, echo=False)
+
+    def extend(self, other):
+        current_size = self._n
+        extended_size = current_size + other._n
+        if extended_size >= self._capacity:
+            self._resize(max(extended_size, self._capacity * 2))
+
+        for n in range(other._n):
+            self._A[current_size + n] = other[n]
+        self._n = extended_size
+
+    def __add__(self, other):
+        self.extend(other)
+        print(list(self))
+
+    def __repr__(self):
+        return f'[{", ".join(map(str, self))}]'
