@@ -1,9 +1,12 @@
-from playground.dsa import LinkedList, Node
+from playground.dsa import LinkedList, Node, StackADT
 
 
-class SinglyListStack:
+class SinglyListStack(StackADT):
     def __init__(self):
         self._stack = LinkedList(Node(None))
+
+    def __str__(self):
+        return str(self._stack)
 
 
 if __name__ == "__main__":
