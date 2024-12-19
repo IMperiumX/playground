@@ -132,97 +132,268 @@ class Vector:
 
 
 class DynamicArray:
-    SHRINK_FACTOR = 0.25
+    """
+    Dynamic Array implementation similar to Python's list.
 
-    def __init__(self, capacity=1):
+    Attributes:
+        _n (int): The number of elements currently stored in the array.
+        _capacity (int): The current capacity of the array.
+        _A (ctypes.py_object array): The underlying array used for storage.
+        _SHRINK_THRESHOLD (float): The threshold (load factor) at which to shrink the array.
+        _RESIZE_FACTOR (float): The factor by which to grow the array when resizing.
+    """
+
+    _SHRINK_THRESHOLD = 0.25  # Shrink when the array is 25% full
+    _RESIZE_FACTOR = 2.0  # Double the capacity when resizing
+
+    def __init__(self, initial_capacity=10, resize_factor=2.0):
+        """
+        Initializes the DynamicArray.
+
+        Args:
+            initial_capacity (int): The initial capacity of the array. Must be > 0.
+            resize_factor (float): The factor by which to grow the array on resize. Must be > 1.
+        """
+
+        if not isinstance(initial_capacity, int) or initial_capacity <= 0:
+            raise ValueError("Initial capacity must be a positive integer.")
+        if not isinstance(resize_factor, (int, float)) or resize_factor <= 1.0:
+            raise ValueError("Resize factor must be a number greater than 1.")
+
         self._n = 0
-        self._capacity = capacity
+        self._capacity = initial_capacity
         self._A = self._make_array(self._capacity)
+        self._RESIZE_FACTOR = float(resize_factor)  # Ensure it's a float
 
     def __len__(self):
+        """
+        Returns the number of elements in the array.
+
+        Returns:
+            int: The number of elements.
+        """
         return self._n
 
     def __getitem__(self, index):
+        """
+        Retrieves the element at the given index.
+
+        Args:
+            index (int): The index of the element to retrieve.
+
+        Returns:
+            object: The element at the specified index.
+
+        Raises:
+            IndexError: If the index is out of range.
+        """
         if not 0 <= index < self._n:
-            raise IndexError("Invalid Index")
+            raise IndexError("Index out of range.")
         return self._A[index]
 
+    def __setitem__(self, index, obj):
+        """
+        Sets the element at the given index to the specified value.
+
+        Args:
+            index (int): The index to set.
+            obj (object): The value to set at the index.
+
+        Raises:
+            IndexError: If the index is out of range.
+        """
+        if not 0 <= index < self._n:
+            raise IndexError("Index out of range.")
+        self._A[index] = obj
+
     def __iter__(self):
-        idx = 0
-        while idx < self._n:
-            yield self._A[idx]
-            idx += 1
+        """
+        Returns an iterator for the array.
+
+        Yields:
+            object: The next element in the array.
+        """
+        for i in range(self._n):
+            yield self._A[i]
+
+    def __contains__(self, obj):
+        """
+        Checks if the array contains the specified object.
+
+        Args:
+            obj (object): The object to search for.
+
+        Returns:
+            bool: True if the object is found, False otherwise.
+        """
+        for i in range(self._n):
+            if self._A[i] == obj:
+                return True
+        return False
+
+    def __add__(self, other):
+        """
+        Concatenates this DynamicArray with another DynamicArray.
+
+        Args:
+            other (DynamicArray): The other DynamicArray to concatenate with.
+
+        Returns:
+            DynamicArray: A new DynamicArray containing all elements.
+
+        Raises:
+            TypeError: If 'other' is not a DynamicArray.
+        """
+        if not isinstance(other, DynamicArray):
+            raise TypeError(
+                "Can only concatenate DynamicArray with another DynamicArray."
+            )
+
+        result = DynamicArray(initial_capacity=self._n + other._n)
+        for i in range(self._n):
+            result.append(self._A[i])
+        for i in range(other._n):
+            result.append(other._A[i])
+        return result
+
+    def __repr__(self):
+        """
+        Returns a string representation of the array.
+
+        Returns:
+            str: A string representation of the array.
+        """
+        return f'[{", ".join(map(str, self))}]'
 
     def _make_array(self, c):
+        """
+        Creates a new ctypes array of the given capacity.
+
+        Args:
+            c (int): The capacity of the array.
+
+        Returns:
+            ctypes.py_object_Array_c: A new ctypes array.
+        """
+        if not isinstance(c, int) or c <= 0:
+            raise ValueError("Capacity must be a positive integer.")
         return (ctypes.py_object * c)()
 
-    def _resize(self, c):
-        B = self._make_array(c)
+    def _resize(self, new_capacity):
+        """
+        Resizes the underlying array to the given capacity.
+
+        Args:
+            new_capacity (int): The new capacity of the array.
+        """
+        if not isinstance(new_capacity, int) or new_capacity <= 0:
+            raise ValueError("New capacity must be a positive integer.")
+
+        B = self._make_array(new_capacity)
         for i in range(self._n):
             B[i] = self._A[i]
         self._A = B
-        self._capacity = c
+        self._capacity = new_capacity
 
     def append(self, obj):
-        if self._n == self._capacity:
-            self._resize(self._capacity * 2)
+        """
+        Appends an element to the end of the array.
 
+        Args:
+            obj (object): The element to append.
+        """
+        if self._n == self._capacity:
+            self._resize(int(self._capacity * self._RESIZE_FACTOR))
         self._A[self._n] = obj
         self._n += 1
 
     def insert(self, index, obj):
+        """
+        Inserts an element at the specified index.
+
+        Args:
+            index (int): The index at which to insert the element.
+            obj (object): The element to insert.
+
+        Raises:
+            IndexError: If the index is out of range.
+        """
+        if not 0 <= index <= self._n:
+            raise IndexError("Index out of range.")
+
         if self._n == self._capacity:
-            self._resize(self._capacity * 2)
+            self._resize(int(self._capacity * self._RESIZE_FACTOR))
 
-        # shift right partiion
-        # sotre newset obj
-        # size ++
-
-        for n in range(self._n, index, -1):
-            self._A[n] = self._A[n - 1]
+        for j in range(self._n, index, -1):
+            self._A[j] = self._A[j - 1]
         self._A[index] = obj
         self._n += 1
 
-    def pop(self, index=None, echo=True):
-        assert self._n > 0, "Pop form an Empty Array"
+    def pop(self, index=-1):
+        """
+        Removes and returns the element at the given index (default: last element).
 
-        if index in (None, -1):
-            index = self._n - 1
+        Args:
+            index (int): The index of the element to remove.
 
+        Returns:
+            object: The removed element.
+
+        Raises:
+            IndexError: If the index is out of range or the array is empty.
+        """
         if not 0 <= index < self._n:
-            raise IndexError("Index our of Range")
+            if index == -1 and self._n > 0:
+                index = self._n - 1
+            else:
+                raise IndexError("Index out of range.")
 
-        obj = self._A[index]  # could raise IndexError => __getitem__
+        value = self._A[index]
 
-        for n in range(index, self._n - 1):
-            self._A[n] = self._A[n + 1]
+        for j in range(index, self._n - 1):
+            self._A[j] = self._A[j + 1]
 
+        self._A[self._n - 1] = None  # Help garbage collection
         self._n -= 1
-        self._A[self._n] = None  # helps GC
-        if self._n <= self.SHRINK_FACTOR * self._capacity:
-            self._capacity = self._capacity // 2
 
-        if echo:
-            print(obj)
+        # Shrink the array if it's less than _SHRINK_THRESHOLD full
+        if (
+            self._n < int(self._capacity * self._SHRINK_THRESHOLD)
+            and self._capacity > 1
+        ):
+            self._resize(max(int(self._capacity / self._RESIZE_FACTOR), 1))
+
+        return value
 
     def remove(self, obj):
-        for idx, value in enumerate(self):
-            if obj == value:
-                self.pop(idx, echo=False)
+        """
+        Removes the first occurrence of the specified element from the array.
 
-    def extend(self, other):
-        current_size = self._n
-        extended_size = current_size + other._n
-        if extended_size >= self._capacity:
-            self._resize(max(extended_size, self._capacity * 2))
+        Args:
+            obj (object): The element to remove.
 
-        for n in range(other._n):
-            self._A[current_size + n] = other[n]
-        self._n = extended_size
+        Raises:
+            ValueError: If the element is not found in the array.
+        """
+        for i in range(self._n):
+            if self._A[i] == obj:
+                self.pop(i)
+                return
+        raise ValueError("Element not found in array.")
 
-    def __add__(self, other):
-        self.extend(other)
-        print(list(self))
+    def extend(self, iterable):
+        """
+        Extends the array by appending elements from an iterable.
 
-    def __repr__(self):
-        return f'[{", ".join(map(str, self))}]'
+        Args:
+            iterable (iterable): The iterable containing elements to append.
+        """
+        for item in iterable:
+            self.append(item)
+
+    def clear(self):
+        """
+        Removes all elements from the array.
+        """
+        self._n = 0
+        self._A = self._make_array(self._capacity)  # Reset to initial capacity
