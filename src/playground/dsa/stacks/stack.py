@@ -150,22 +150,23 @@ class Stack:
         return f"Stack(limit={self.limit})"
 
 
-try:
-    stack = Stack(limit=5)
-    stack.push(1)
-    stack.push(2)
-    stack.push(3)
-    print(f"Stack contents: {stack}")  # Output: Stack contents: [1, 2, 3]
-    print(f"Stack size: {len(stack)}")  # Output: Stack size: 3
-    print(f"Top element: {stack.peek()}")  # Output: Top element: 3
-    print(f"Popped element: {stack.pop()}")  # Output: Popped element: 3
-    print(f"Is 2 in the stack? {2 in stack}")  # Output: Is 2 in the stack? True
-    print(f"Is stack empty? {stack.is_empty()}")  # Output: Is stack empty? False
-    stack.push(4)
-    stack.push(5)
-    stack.push(6)
-    stack.push(7)  # This will raise a StackOverflowError
-except StackOverflowError as e:
-    print(f"Error: {e}")  # Output: Error: Cannot push onto a full stack
-except StackUnderflowError as e:
-    print(f"Error: {e}")
+if __name__ == "__main__":
+    try:
+        stack = Stack(limit=5)
+        stack.push(1)
+        stack.push(2)
+        stack.push(3)
+        print(f"Stack contents: {stack}")  # Output: Stack contents: [1, 2, 3]
+        print(f"Stack size: {len(stack)}")  # Output: Stack size: 3
+        print(f"Top element: {stack.peek()}")  # Output: Top element: 3
+        print(f"Popped element: {stack.pop()}")  # Output: Popped element: 3
+        print(f"Is 2 in the stack? {2 in stack}")  # Output: Is 2 in the stack? True
+        print(f"Is stack empty? {stack.is_empty()}")  # Output: Is stack empty? False
+        stack.push(4)
+        stack.push(5)
+        stack.push(6)
+        stack.push(7)  # This will raise a StackOverflowError
+    except StackOverflowError as e:
+        print(f"Error: {e}")  # Output: Error: Cannot push onto a full stack
+    except StackUnderflowError as e:
+        print(f"Error: {e}")
