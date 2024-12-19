@@ -1,3 +1,6 @@
+from .stack_adt import StackADT
+
+
 class StackOverflowError(Exception):
     """Exception raised when a stack overflow occurs."""
 
@@ -10,7 +13,7 @@ class StackUnderflowError(Exception):
     pass
 
 
-class Stack:
+class Stack(StackADT):
     """
     A stack data structure implementation.
 
