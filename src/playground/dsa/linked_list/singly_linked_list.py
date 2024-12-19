@@ -42,10 +42,6 @@ class LinkedList:
         """Returns the number of nodes in the linked list (cached)."""
         return self._length
 
-    def __repr__(self):
-        """Returns a string representation of the linked list."""
-        return " => ".join(map(str, self))
-
     def size(self):
         """Returns the number of nodes in the linked list (cached)."""
         return self._length
@@ -199,6 +195,14 @@ class LinkedList:
                 self._length -= 1
                 return
             current = current.next_node
+
+    def __repr__(self):
+        """Returns a string representation of the linked list."""
+        return f"LinkedList([{', '.join(str(data) for data in self)}])"
+
+    def __str__(self):
+        """Returns a string representation of the linked list."""
+        return " => ".join(map(str, self))
 
 
 if __name__ == "__main__":
