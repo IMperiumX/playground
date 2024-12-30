@@ -1,0 +1,177 @@
+#lang sicp
+
+; Exercise 1.2
+(/ (+ (+ 5 4) (- 2 (- 3 (+ 6 (/ 4 5))))) (* 3 (- 6 2) (- 2 7)))
+
+; Exercise 1.3
+
+(define (square x)
+  (* x x))
+
+(define (sum-of-squares x y)
+  (+ (square x) (square y)))
+
+(define (largest2-sum-of-squares x y z)
+  ; x is excluded
+  (cond
+    [(and (<= x y) (<= x z)) (sum-of-squares y z)]
+    ; y is excluded
+    [(and (<= y x) (<= y z)) (sum-of-squares x z)]
+    ; z is excluded
+    [(and (<= z x) (<= z y)) (sum-of-squares x y)]))
+; Note: It's also tempting to go for (else (sum-of-squares x y)))
+
+(largest2-sum-of-squares 0 2 1)
+
+; Exercise 1.4
+; Operators can be in compound expressions.
+; Based on the value of parameter b operator is determined.
+(define (a-plus-abs-b a b)
+  ((if (> b 0) + -) a b))
+
+; Exercise 1.5
+
+(define (p)
+  (p))
+
+(define (test x y)
+  (if (= x 0) 0 y))
+
+; test the interpreter with
+; (test 0 (p))
+
+; Normal order evaluation:
+;   In this case operand (p) will not be evaluated until it is needed by
+;   some primitive operation and thus this will return 0 as result.
+;
+; Applicative order evaluation:
+;   In this case operand y will be by default evaluated and then it will
+;   end up in recursion since (p) points to itself.
+
+; Exercise 1.6
+; (define (new-if predicate then-clause else-clause)
+; (cond (predicate then-clause)
+; (else else-clause)))
+
+; (define (good-enough? guess x)
+;   (< (abs (- (square guess) x)) 0.001))
+
+; (define (improve guess x) guess - 0.1)
+; (define (sqrt-iter guess x)
+; (new-if (good-enough? guess x)
+;  guess
+; (sqrt-iter (improve guess x) x)))
+
+; (sqrt-iter 1.0 10) would raise `ran out of memory error`
+; new-if method evaluates in the normal order
+; comparing to applicative order of evaluation which is applied to the
+; primitive procedures.
+;
+; Normal order is such that compound procedures are evaluated but
+; arguments are not until whole statement is comprised only of primitive
+; operations. In this case recursion doesn't end and sqrt-iter is
+; evaluated repeatedly until we get to Stack Level too deep message.
+; If parameters where to be evaluated in every step, in one moment
+; good-enough? would return true and loop would be stopped and `rolled
+; back` to root of recursion.
+
+; Exercise 1.7
+
+(define (square-iter guess x)
+
+  (if (good-enough? guess x)
+      guess
+      (begin ; used this compound procedure in order to be able to
+        (display guess) ; display the intermediate guess values
+        (newline)
+        (square-iter (improve guess x) x))))
+
+(define (improve guess x)
+  (average guess (/ x guess)))
+
+(define (average x y)
+  (/ (+ x y) 2))
+
+(define (good-enough? guess x)
+  (< (abs (- (square guess) x)) 0.001))
+
+(define (sqrt x)
+  (square-iter 1.0 x))
+
+;;; (sqrt 4324232313212342348)
+
+; 1.0
+; 2162116156606171100.0
+; 1081058078303085600.0
+; 540529039151542800.0
+; 270264519575771400.0
+; 135132259787885700.0
+; ...
+; 2079478856.1590183
+; 2079478856.159
+; 2079478856.159
+; 2079478856.159
+; 2079478856.159
+; ... loop continues indefinitely
+
+; Why does the program not terminate?
+; Floating point arithmetic is not precise enough to get to the
+; desired result. The difference between the guess and the actual
+; square root is not small enough to be considered as good enough.
+; The difference is always greater than 0.001 and the loop continues
+; indefinitely.
+
+;;; TL;DR: all real numbers can be presented only with limited number of significants.
+
+; Exercise 1.8
+
+(define (in-delta? guess1 guess2)
+  (< (abs (- guess1 guess2)) 0.00001))
+
+(define (newton-improve guess x)
+  (/ (+ (/ x (square guess)) (* guess 2)) 3))
+(define (newton-method guess x)
+  (if (in-delta? guess (newton-improve guess x)) guess (newton-method (newton-improve guess x) x)))
+
+(define (cube-root x)
+  (newton-method 1.0 x))
+
+(cube-root 27)
+
+
+; Exercise 1.9
+
+; first procedure => 1 + (a - 1) + b
+; secod preocedure => (a - 1) + (b + 1)
+(define (A x y)
+(cond ((= y 0) 0)
+((= x 0) (* 2 y))
+((= y 1) 2)
+(else (A (- x 1) (A x (- y 1))))))
+; (A 0 3)
+; (A 1 10)
+; (A 2 4) 2 ^ 16
+; Exercise 1.10
+; (define (f n) (A 0 n)) 2 * n
+; (define (g n) (A 1 n)) 2 ^ n
+; (define (h n) (A 2 n)) 2^n^2
+
+
+; Exercise 1.10
+
+; There is interesting discussion among other comments on Hacker News
+; regarding this excerise: http://news.ycombinator.com/item?id=2843715
+; original post: https://web.archive.org/web/20111107215803/http://vedantk.tumblr.com/post/8424437797/sicp-is-under-attack-updated
+; chat and discussion around it : https://aistudio.google.com/app/prompts/17KexOKgnT1nyfRKTjbniP-xD6w0yk1XJ
+
+(define (g n)
+(if (< n 3)
+    n
+    (+ (g (- n 1)) (* 2 (g (- n 2))) (* 3 (g (- n  3))))))
+
+(g 40)
+
+(define (g-iter a b c count)
+ 4     )
+  
+
