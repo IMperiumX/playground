@@ -1,7 +1,7 @@
 import abc
 
 
-class Tree(meta=abc.ABCMeta):
+class TreeADT(meta=abc.ABCMeta):
     class Position(meta=abc.ABCMeta):
         @abc.abstractmethod
         def element(self):
