@@ -1,3 +1,17 @@
+"""
+Insert value
+Delete value
+Count number of nodes in tree
+Whether a value is in the tree
+Calculate height of the tree
+Binary search tree
+    Determine if it is a binary search tree
+    Get maximum value
+    Get minimum value
+
+"""
+
+
 class Node:
     def __init__(self, data, left=None, right=None):
         self.data = data
