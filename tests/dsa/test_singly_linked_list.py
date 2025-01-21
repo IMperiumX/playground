@@ -1,6 +1,11 @@
 import unittest
 
-from singly_linked_list import EmptyListError, LinkedList, Node, OutOfBoundsError
+from playground.dsa.linked_list.singly_linked_list import (
+    EmptyListError,
+    LinkedList,
+    Node,
+    OutOfBoundsError,
+)
 
 
 class TestLinkedList(unittest.TestCase):
@@ -229,14 +234,14 @@ class TestLinkedList(unittest.TestCase):
     def test_repr(self):
         """Test the __repr__ method."""
         ll = LinkedList()
-        self.assertEqual(repr(ll), "")
+        self.assertEqual(repr(ll), "LinkedList([])")
 
         ll.push_back(1)
-        self.assertEqual(repr(ll), "1")
+        self.assertEqual(repr(ll), "LinkedList([1])")
 
         ll.push_back(2)
         ll.push_back(3)
-        self.assertEqual(repr(ll), "1 => 2 => 3")
+        self.assertEqual(repr(ll), "LinkedList([1, 2, 3])")
 
     def test_init_with_non_empty_list(self):
         """Test the __init__ method when passing a non-empty linked list."""
