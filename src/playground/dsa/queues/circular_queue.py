@@ -1,7 +1,7 @@
 # Circular Queue
 from typing import Any
 
-from playground.dsa.queues.queue_adt import QueueADT
+from .queue_adt import QueueADT
 
 
 class QueueOverflowError(Exception):

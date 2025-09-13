@@ -1,5 +1,6 @@
+from playground.dsa import Stack
+
 from .queue_adt import QueueADT
-from ..stacks.stack import Stack
 
 
 class QueueOverflowError(Exception):

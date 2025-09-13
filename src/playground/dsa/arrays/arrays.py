@@ -1,6 +1,6 @@
 import ctypes
 
-from playground.src.playground.dsa.logging_config import logger
+from playground.dsa.logging_config import logger
 
 
 class DynamicArray:
