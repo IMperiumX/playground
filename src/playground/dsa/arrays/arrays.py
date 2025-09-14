@@ -2,8 +2,10 @@ import ctypes
 
 from playground.dsa.logging_config import logger
 
+from .array_adt import DynamicArrayADT
 
-class DynamicArray:
+
+class DynamicArray(DynamicArrayADT):
     """
     Dynamic Array implementation similar to Python's list.
 

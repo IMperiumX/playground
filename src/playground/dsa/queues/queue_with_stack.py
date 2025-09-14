@@ -1,4 +1,4 @@
-from playground.dsa import Stack
+from playground.dsa import Stack, StackADT
 
 from .queue_adt import QueueADT
 
@@ -34,7 +34,9 @@ class Queue(QueueADT):
         Args:
             limit (int, optional): The maximum capacity of the queue. Defaults to 10.
         """
-        self._queue = Stack(limit=limit)  # Use a protected attribute for internal data
+        self._queue: StackADT = Stack(
+            limit=limit
+        )  # Use a protected attribute for internal data
         self.limit = limit
 
     def __bool__(self):
@@ -72,7 +74,7 @@ class Queue(QueueADT):
         """
         if self.is_empty():
             raise QueueUnderflowError("Cannot dequeue from an empty queue")
-        temp_stack = Stack()
+        temp_stack: StackADT = Stack()
         while self._queue:
             temp_stack.push(self._queue.pop())
         data = temp_stack.pop()
@@ -92,7 +94,7 @@ class Queue(QueueADT):
         """
         if self.is_empty():
             raise QueueUnderflowError("Cannot peek into an empty queue")
-        temp_stack = Stack()
+        temp_stack: StackADT = Stack()
         while self._queue:
             temp_stack.push(self._queue.pop())
         data = temp_stack.peek()

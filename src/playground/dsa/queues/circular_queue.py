@@ -1,6 +1,9 @@
 # Circular Queue
 from typing import Any
 
+from playground.dsa import DynamicArray
+from playground.dsa.arrays.array_adt import DynamicArrayADT
+
 from .queue_adt import QueueADT
 
 
@@ -42,7 +45,9 @@ class CircularQueue(QueueADT):
         Args:
             limit (int, optional): The maximum capacity of the queue. Defaults to 10.
         """
-        self._queue = [None] * limit  # Use a protected attribute for internal data
+        self._queue: DynamicArrayADT = DynamicArray(
+            initial_capacity=limit
+        )  # Use a protected attribute for internal data
         self.limit = limit
         self.front = 0
         self.rear = 0

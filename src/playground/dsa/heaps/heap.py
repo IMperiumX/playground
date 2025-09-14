@@ -1,4 +1,7 @@
-class Heap:
+from .heap_adt import HeapADT
+
+
+class Heap(HeapADT):
     """
     A class representing a Min-Heap data structure.
 
