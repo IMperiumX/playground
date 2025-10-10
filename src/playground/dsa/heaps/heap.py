@@ -41,13 +41,13 @@ class Heap(HeapADT):
     """
 
     def __init__(self, data=None):
-        self.data = data or []
+        self.data = data or []  # TODO: use Doubly Linked List
 
     def insert(self, value):
         self.data.append(value)
         self._heapify_up()
 
-    def _heapifyqueues_up(self):
+    def _heapify_up(self):
         index = len(self.data) - 1
         while index > 0:
             parent_index = (index - 1) // 2
