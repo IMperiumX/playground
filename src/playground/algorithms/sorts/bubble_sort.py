@@ -1,31 +1,10 @@
-# TODO: Why this not working (comp (j, j+1) not this comparision)
-def inefficient_bubble_sort(arr):
-    for j, left in enumerate(arr):
-        for i, right in enumerate(arr):
-            if right > left:
-                arr[j], arr[i] = arr[i], arr[j]
-    return arr
+from typing import Any
 
 
-def bubble_sort(list):
-    n = len(list)
-
-    for i in range(n - 1):
-        for j in range(n - 1):
-            if list[j] > list[j + 1]:
-                tmp = list[j]
-                list[j] = list[j + 1]
-                list[j + 1] = tmp
-
-    return list
-
-
-def bubble_sort_iterative(collection):
+def bubble_sort_iterative(collection: list[Any]) -> list[Any]:
     length = len(collection)
-    # reversed(range(length)) same as range(n-1, -1, -1)
-    # diff between starting from largest index to smallest index
     for i in reversed(range(length)):
-        swapped = False  # `swapped` flag to check if the original collection is already sorted (one iteration is enough)
+        swapped = False
         for j in range(i):
             if collection[j] > collection[j + 1]:
                 swapped = True
@@ -35,7 +14,7 @@ def bubble_sort_iterative(collection):
     return collection
 
 
-def bubble_sort_recursive(collection):
+def bubble_sort_recursive(collection: list[Any]) -> list[Any]:
     length = len(collection)
     swapped = False
     for i in range(length - 1):
@@ -44,3 +23,18 @@ def bubble_sort_recursive(collection):
             swapped = True
 
     return collection if not swapped else bubble_sort_recursive(collection)
+
+
+if __name__ == "__main__":
+    from random import sample
+
+    # doctest.testmod()
+
+    # Benchmark: Iterative seems slightly faster than recursive.
+    unsorted = sample(range(-5, 5), 10)
+    print("\nIterative bubble sort:")
+    print(*bubble_sort_iterative(unsorted), sep=",")
+
+    unsorted = sample(range(-5, 5), 10)
+    print("\nRecursive bubble sort:")
+    print(*bubble_sort_recursive(unsorted), sep=",")
