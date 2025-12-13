@@ -46,35 +46,12 @@ graph_adj_list = {
     "H": ["I"],
     "I": [],
 }
-# if __name__ == "__main__":
-#     print("DFS with Adjacency List (Recursive):")
-#     visited_nodes = set()
-#     dfs_recursive_adj_list(graph_adj_list, "A", visited_nodes)
-#     print("\n")
+if __name__ == "__main__":
+    print("DFS with Adjacency List (Recursive):")
+    visited_nodes = set()
+    dfs_recursive_adj_list(graph_adj_list, "A", visited_nodes)
+    print("\n")
 
-#     print("DFS with Adjacency List (Iterative with Stack):")
-#     dfs_iterative_adj_list(graph_adj_list, "A")
-#     print("\n")
-
-
-def dfs(graph, start_node):
-    """
-    graph: adjecency list
-    start_node: TreeNode
-    """
-    visited = set(start_node)
-    stack = [start_node]
-
-    while stack:
-        node = stack.pop()
-        print(node, end=" --> ")
-
-        for n in reversed(graph.get(node, [])):
-            if n not in visited:
-                visited.add(n)
-                stack.append(n)
-
-
-print("DFS with Adjacency List (Iterative with Stack):")
-dfs(graph_adj_list, "A")
-print("\n")
+    print("DFS with Adjacency List (Iterative with Stack):")
+    dfs_iterative_adj_list(graph_adj_list, "A")
+    print("\n")
